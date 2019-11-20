@@ -1,13 +1,16 @@
 package it.polimi.pgql.queryplanner;
 
-import it.polimi.pgql.queryplanner.plans.QueryPlan;
+import it.polimi.pgql.queryplanner.graph.Graph;
+import it.polimi.pgql.queryplanner.graph.GraphVertex;
+import it.polimi.pgql.queryplanner.planner.QueryPlan;
+import it.polimi.pgql.queryplanner.planner.QueryPlanner;
 import oracle.pgql.lang.Pgql;
 import oracle.pgql.lang.PgqlException;
 import oracle.pgql.lang.PgqlResult;
 import oracle.pgql.lang.ir.GraphQuery;
 import oracle.pgx.api.*;
 
-import java.util.Random;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
@@ -18,16 +21,39 @@ public class Main {
 
         try (Pgql pgql = new Pgql()) {
             //Gets the parsed PGQL result from which we extrapolate the GraphQuery
-            PgqlResult result = pgql.parse("SELECT n FROM g MATCH (n:Person) -[e:likes]-> (m:Person) WHERE n.name = 'Dave'");
+            PgqlResult result = pgql.parse("SELECT a,b FROM g MATCH (a) -> (b) -> (c)");
             //Contains the AST structure with the different operators to be executed on the Graph
             GraphQuery graphQuery = result.getGraphQuery();
 
+            System.out.println(result.isQueryValid());
+
             QueryPlan plan = planner.generatePlan(graphQuery);
 
+            System.out.println(plan);
             //TODO: get a new string from the plan tree
         }
 
         testPGX();
+
+//        Graph g = new Graph();
+//
+//        GraphVertex a1, a2, a3, a4;
+//        g.addVertex(a1 = new GraphVertex("1"));
+//        g.addVertex(a2 = new GraphVertex("2"));
+//        g.addVertex(a3 = new GraphVertex("3"));
+//        g.addVertex(a4 = new GraphVertex("4"));
+//        g.addEdge(a1, a3);
+//        g.addEdge(a1, a4);
+//
+//        g.addEdge(a2, a1);
+//        g.addEdge(a2, a4);
+//
+//        g.addEdge(a3, a1);
+//        g.addEdge(a3, a4);
+//
+//        g.convertToCSR();
+
+//        testPGX();
     }
 
     private static void testPGX() throws PgqlException, ExecutionException, InterruptedException {
@@ -41,7 +67,9 @@ public class Main {
         System.out.println("Loading graph...");
 
         //Creates and uploads to the server the test graph we are making
-        PgxGraph g = testGraph(session);
+        PgxGraph g = GraphMaker.getMoviesDatabase(session);
+
+//        System.out.println("Graph loaded. (with name '" + session.getGraphs().entrySet().stream().findAny().get().getKey() + "')");
 
         System.out.println("Graph loaded. (with name '" + session.getGraphs().entrySet().stream().findAny().get().getKey() + "')");
 
@@ -69,7 +97,7 @@ public class Main {
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
             }
-        } while(true);
+        } while (true);
 
         //Destroys the graph and the session
         g.destroy();
@@ -81,11 +109,10 @@ public class Main {
                 session,
                 "test",
                 new String[]{"Kien", "Dario", "Davide", "Max", "Ari", "Leti", "Dani", "Gio", "Stef", "Giammi", "Luca", "Paso", "Pit"},
-                30);
+                69);
     }
 
-
-    public static PgxSession makePGXSession(String name) throws ExecutionException, InterruptedException {
+    private static PgxSession makePGXSession(String name) throws ExecutionException, InterruptedException {
         ServerInstance si = Pgx.getInstance("http://localhost:7007");
         return si.createSession(name);
     }

@@ -8,6 +8,7 @@ import oracle.pgx.common.Pair;
 import oracle.pgx.common.types.IdType;
 import oracle.pgx.config.IdGenerationStrategy;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -46,5 +47,9 @@ public class GraphMaker {
         }
 
         return builder.build(graphName);
+    }
+
+    public static PgxGraph getMoviesDatabase(PgxSession session) throws ExecutionException, InterruptedException {
+        return session.readGraphWithProperties(System.getProperty("user.dir") + "/graphs/imdb_csv/imdb.json", "movies");
     }
 }

@@ -1,0 +1,33 @@
+{
+    "vertex_uris": ["imdb_v.csv"],
+    "edge_uris": ["imdb_e.csv"],
+    "vertex_id_type":"integer",
+    "header":true,
+    "format":"csv",
+    "vertex_id_column": "id",
+    "edge_source_column": "source",
+    "edge_destination_column": "dest",
+    "edge_label_column": "role",
+    "vertex_labels_column": "type",
+    "vertex_props":[
+        {
+            "type":"string",
+            "name":"name"
+        },
+        {
+            "type":"integer",
+            "name":"role"
+        }
+    ],
+    "edge_props":[
+        {
+            "type":"integer",
+            "name":"level"
+        }
+    ],
+    "loading": {
+        "load_vertex_labels":true,
+        "load_edge_label":true
+    }
+}
+

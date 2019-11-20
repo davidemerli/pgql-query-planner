@@ -1,0 +1,3 @@
+#first line is the number of vertices
+4
+#vertices are in the format name:property1,property2,...,propertyN
