@@ -29,4 +29,8 @@ public abstract class QueryPlan {
     public List<QueryPlan> getChildren() {
         return children;
     }
+
+    public double getCost() {
+        return cost;
+    }
 }

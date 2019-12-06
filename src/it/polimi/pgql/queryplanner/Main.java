@@ -21,37 +21,17 @@ public class Main {
 
         try (Pgql pgql = new Pgql()) {
             //Gets the parsed PGQL result from which we extrapolate the GraphQuery
-            PgqlResult result = pgql.parse("SELECT a,b FROM g MATCH (a) -> (b) -> (c)");
+            PgqlResult result = pgql.parse("SELECT a,b FROM g MATCH (a) -> (b) -> (c) WHERE a.ID = 0");
             //Contains the AST structure with the different operators to be executed on the Graph
             GraphQuery graphQuery = result.getGraphQuery();
 
             System.out.println(result.isQueryValid());
 
-            QueryPlan plan = planner.generatePlan(graphQuery);
+            QueryPlan plan = planner.customPlan(graphQuery);
 
             System.out.println(plan);
             //TODO: get a new string from the plan tree
         }
-
-        testPGX();
-
-//        Graph g = new Graph();
-//
-//        GraphVertex a1, a2, a3, a4;
-//        g.addVertex(a1 = new GraphVertex("1"));
-//        g.addVertex(a2 = new GraphVertex("2"));
-//        g.addVertex(a3 = new GraphVertex("3"));
-//        g.addVertex(a4 = new GraphVertex("4"));
-//        g.addEdge(a1, a3);
-//        g.addEdge(a1, a4);
-//
-//        g.addEdge(a2, a1);
-//        g.addEdge(a2, a4);
-//
-//        g.addEdge(a3, a1);
-//        g.addEdge(a3, a4);
-//
-//        g.convertToCSR();
 
 //        testPGX();
     }
@@ -72,7 +52,7 @@ public class Main {
 //        System.out.println("Graph loaded. (with name '" + session.getGraphs().entrySet().stream().findAny().get().getKey() + "')");
 
         System.out.println("Graph loaded. (with name '" + session.getGraphs().entrySet().stream().findAny().get().getKey() + "')");
-
+        
         do {
             System.out.println("Insert PGQL query (write 'quit' to exit): ");
 

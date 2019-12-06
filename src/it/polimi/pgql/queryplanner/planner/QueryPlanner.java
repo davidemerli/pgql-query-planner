@@ -2,16 +2,48 @@ package it.polimi.pgql.queryplanner.planner;
 
 import it.polimi.pgql.queryplanner.planner.operators.CartesianProductOperator;
 import it.polimi.pgql.queryplanner.planner.operators.NeighborMatchOperator;
-import it.polimi.pgql.queryplanner.planner.QueryPlan;
 import it.polimi.pgql.queryplanner.planner.operators.RootVertexMatchOperator;
-import oracle.pgql.lang.ir.GraphQuery;
-import oracle.pgql.lang.ir.QueryVertex;
-import oracle.pgql.lang.ir.VertexPairConnection;
+import oracle.pgql.lang.ir.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class QueryPlanner {
+
+    public QueryPlan customPlan(GraphQuery query) {
+        GraphPattern graphPattern = query.getGraphPattern();
+
+        for (QueryVertex vertex : query.getGraphPattern().getVertices()) {
+            List<QueryExpression.BinaryExpression> constraints = getVertexConstraints(vertex, graphPattern);
+
+
+        }
+
+        return null;
+    }
+
+    private List<QueryExpression.BinaryExpression> getVertexConstraints(QueryVertex qv, GraphPattern gp) {
+        List<QueryExpression.BinaryExpression> list = new ArrayList<>();
+
+        for (QueryExpression constraint : gp.getConstraints()) {
+            if (constraint instanceof QueryExpression.BinaryExpression) {
+                QueryExpression.BinaryExpression be = (QueryExpression.BinaryExpression) constraint;
+
+                boolean first = be.getExp1() instanceof QueryExpression.PropertyAccess
+                        && ((QueryExpression.PropertyAccess)be.getExp1()).getVariable().equals(qv);
+                boolean second = be.getExp2() instanceof QueryExpression.PropertyAccess
+                        && ((QueryExpression.PropertyAccess)be.getExp2()).getVariable().equals(qv);
+
+                if (first || second) {
+                    list.add(be);
+                }
+            }
+        }
+
+        return list;
+    }
 
     /**
      * Basic implementation of the plan generator from the slides
@@ -74,25 +106,5 @@ public class QueryPlanner {
         }
 
         return previousPlan;
-    }
-
-    /**
-     * @param root Root of the AST tree of the query plan
-     * @return the new PGQL formatted string to use for the actual query
-     */
-    public String getPGQLQueryStringFromPlan(QueryPlan root) {
-        StringBuilder outputBuilder = new StringBuilder();
-
-//        while (root != null) {
-//            //TODO: actually add to the StringBuider the string equivalent of the query plan operator
-//            outputBuilder.append(/*things*/  " ");
-//
-//            root = root.child;
-//        }
-
-        //Reverses the tree since we need post-order traversal
-        outputBuilder.reverse();
-
-        return outputBuilder.toString();
     }
 }
