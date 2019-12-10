@@ -21,7 +21,9 @@ public class Main {
 
         try (Pgql pgql = new Pgql()) {
             //Gets the parsed PGQL result from which we extrapolate the GraphQuery
-            PgqlResult result = pgql.parse("SELECT a,b FROM g MATCH (a) -> (b) -> (c) WHERE a.ID = 0");
+//            PgqlResult result = pgql.parse("SELECT a,b FROM g MATCH (a) -> (b) -> (d) -> (a) -> (c) -> (e) -> (f) -> (g) -> (c) (c) -> (a) WHERE a.ID = 0");
+            PgqlResult result = pgql.parse("SELECT * FROM example MATCH (a)->(b)->(c)->(d)->(e)->(f)->(g)->(h)->(i)->(j)->(k)->(l)->(m)->(a), (a)->(n)->(o)->(d) (o)->(p)->(h), (n)->(q)->(l), (p)->(q)");
+
             //Contains the AST structure with the different operators to be executed on the Graph
             GraphQuery graphQuery = result.getGraphQuery();
 

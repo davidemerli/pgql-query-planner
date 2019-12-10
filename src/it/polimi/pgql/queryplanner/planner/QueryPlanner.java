@@ -15,6 +15,9 @@ public class QueryPlanner {
     public QueryPlan customPlan(GraphQuery query) {
         GraphPattern graphPattern = query.getGraphPattern();
 
+        CycleFinder finder = new CycleFinder(query);
+        finder.printCycles();
+
         for (QueryVertex vertex : query.getGraphPattern().getVertices()) {
             List<QueryExpression.BinaryExpression> constraints = getVertexConstraints(vertex, graphPattern);
 
