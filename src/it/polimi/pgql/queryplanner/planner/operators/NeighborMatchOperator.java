@@ -7,11 +7,14 @@ public class NeighborMatchOperator extends QueryPlan {
 
     private QueryVertex srcVertex;
     private QueryVertex dstVertex;
-    private boolean outgoing; // true if we match from src to dst, false if we match from dst to src.
 
-    public NeighborMatchOperator(QueryVertex vertexFromWhichWeCanExpand, QueryVertex vertex, boolean outgoing) {
+    public NeighborMatchOperator(QueryVertex vertexFromWhichWeCanExpand, QueryVertex vertex) {
         this.srcVertex = vertexFromWhichWeCanExpand;
         this.dstVertex = vertex;
-        this.outgoing = outgoing;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (src %s, dst %s)", this.getClass().getSimpleName(), srcVertex.getName(), dstVertex.getName());
     }
 }

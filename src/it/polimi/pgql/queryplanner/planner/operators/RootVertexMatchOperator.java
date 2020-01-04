@@ -10,4 +10,9 @@ public class RootVertexMatchOperator extends QueryPlan {
     public RootVertexMatchOperator(QueryVertex vertex) {
         this.vertex = vertex;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", this.getClass().getSimpleName(), vertex.getName());
+    }
 }
